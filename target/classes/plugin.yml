@@ -1,0 +1,4 @@
+name: DisableHitSounds
+version: '1.0-SNAPSHOT'
+main: me.nottolerable.disablehitsounds.DisableHitSounds
+api-version: 1.19
