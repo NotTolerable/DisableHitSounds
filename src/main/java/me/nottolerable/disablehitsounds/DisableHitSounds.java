@@ -1,52 +1,52 @@
 package me.nottolerable.disablehitsounds;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.EnumWrappers;
+package me.lasillje.fastpot;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class DisableHitSounds extends JavaPlugin {
+public class DisableHitSounds extends JavaPlugin implements Listener {
 
-    @Override
-    public void onEnable() {
-        ProtocolLibrary.getProtocolManager().addPacketListener(
-                new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.ENTITY_SOUND) {
-                    @Override
-                    public void onPacketSending(PacketEvent event) {
-                        Player player = event.getPlayer();
-                        ItemStack heldItem = player.getInventory().getItemInMainHand();
+        @Override
+        public void onEnable() {
+                getServer().getPluginManager().registerEvents(this, this);
+                }
 
-                        if (heldItem != null &&
-                                (heldItem.getType() == Material.DIAMOND_SWORD && heldItem.getItemMeta().getDisplayName().equals("§bDagger")) ||
-                                (heldItem.getType() == Material.GOLDEN_SWORD) ||
-                                (heldItem.getType() == Material.NETHERITE_HOE)) {
+        @EventHandler
+        public void onPlayerDamage(EntityDamageByEntityEvent event) {
+                if (event.getEntity() instanceof Player) {
+                        Player damagedPlayer = (Player) event.getEntity();
+                        disableShield(damagedPlayer);
+                }
+        
+                if (event.getDamager() instanceof Player) {
+                        Player damager = (Player) event.getDamager();
+                        disableShield(damager);
+                }
+        }
 
-                            EnumWrappers.SoundCategory soundCategory = event.getPacket().getSoundCategories().read(0);
-                            String soundName = event.getPacket().getStrings().read(0);
+        @EventHandler
+        public void onPlayerItemDamage(PlayerItemDamageEvent event) {
+                if (event.getItem().getType() == Material.SHIELD) {
+                        event.setCancelled(true);
+                }
+        }
 
-                            if (soundCategory == EnumWrappers.SoundCategory.PLAYERS &&
-                                    (soundName.equals("entity.player.attack.crit") ||
-                                            soundName.equals("entity.player.attack.knockback") ||
-                                            soundName.equals("entity.player.attack.nodamage") ||
-                                            soundName.equals("entity.player.attack.strong") ||
-                                            soundName.equals("entity.player.attack.sweep") ||
-                                            soundName.equals("entity.player.attack.weak"))) {
-                                event.setCancelled(true);
-                            }
+        private void disableShield(Player player) {
+                player.getInventory().setItemInOffHand(null); // Clear off-hand item
+        
+                new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                                player.getInventory().setItemInOffHand(player.getInventory().getItemInMainHand()); // Restore off-hand item
                         }
-                    }
-                });
-    }
-
-    @Override
-    public void onDisable() {
-        ProtocolLibrary.getProtocolManager().removePacketListeners(this);
-    }
-
+                }.runTaskLater(this, 20L); // Delay for 1 second (20 ticks)
+        }
 }
