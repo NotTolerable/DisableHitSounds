@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class SwordShieldDisablePlugin extends JavaPlugin implements Listener {
+public class DisableHitSounds extends JavaPlugin implements Listener {
 
         @Override
         public void onEnable() {
