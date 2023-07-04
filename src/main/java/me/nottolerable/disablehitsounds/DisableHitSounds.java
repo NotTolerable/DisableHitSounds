@@ -1,50 +1,32 @@
 package me.nottolerable.disablehitsounds;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-public class DisableHitSounds extends JavaPlugin implements Listener {
+public class SwordShieldDisablePlugin extends JavaPlugin implements Listener {
 
         @Override
         public void onEnable() {
                 getServer().getPluginManager().registerEvents(this, this);
-                }
-
-        @EventHandler
-        public void onPlayerDamage(EntityDamageByEntityEvent event) {
-                if (event.getEntity() instanceof Player) {
-                        Player damagedPlayer = (Player) event.getEntity();
-                        disableShield(damagedPlayer);
-                }
-        
-                if (event.getDamager() instanceof Player) {
-                        Player damager = (Player) event.getDamager();
-                        disableShield(damager);
-                }
         }
 
         @EventHandler
-        public void onPlayerItemDamage(PlayerItemDamageEvent event) {
-                if (event.getItem().getType() == Material.SHIELD) {
-                        event.setCancelled(true);
-                }
-        }
+        public void onPlayerInteract(PlayerInteractEvent event) {
+                ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
 
-        private void disableShield(Player player) {
-                player.getInventory().setItemInOffHand(null); // Clear off-hand item
-        
-                new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                                player.getInventory().setItemInOffHand(player.getInventory().getItemInMainHand()); // Restore off-hand item
+                // Check if the item is a sword
+                if (item.getType() == Material.DIAMOND_SWORD || item.getType() == Material.IRON_SWORD
+                                || item.getType() == Material.GOLDEN_SWORD || item.getType() == Material.STONE_SWORD
+                                || item.getType() == Material.WOODEN_SWORD) {
+
+                        // Check if the player is using a shield
+                        if (event.getPlayer().isBlocking()) {
+                                event.setCancelled(true);
                         }
-                }.runTaskLater(this, 20L); // Delay for 1 second (20 ticks)
+                }
         }
 }
