@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.nottolerable</groupId>
-    <artifactId>DisableHitSounds</artifactId>
+    <artifactId>SnowballFlightPlugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>DisableHitSounds</name>
+    <name>SnowballFlightPlugin</name>
 
     <properties>
         <java.version>1.8</java.version>
