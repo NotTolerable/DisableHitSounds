@@ -1,6 +1,6 @@
 name: SnowballFlightPlugin
 version: '${project.version}'
-main: me.nottolerable.disablehitsounds.DisableHitSounds
+main: me.nottolerable.snowballflightplugin.SnowballFlightPlugin
 api-version: 1.20
 depend: [ ]
 
