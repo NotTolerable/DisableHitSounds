@@ -1,6 +1,6 @@
 name: DisableHitSounds
 version: '${project.version}'
 main: me.nottolerable.disablehitsounds.DisableHitSounds
-api-version: 1.19
-depend: [ ProtocolLib ]
+api-version: 1.20
+depend: [ ]
 
